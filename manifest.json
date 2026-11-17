@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Pause Before You Scroll",
+  "version": "1.0.0",
+  "description": "A 60-second box-breathing pause before distracting sites, then a choice: go back or continue.",
+  "permissions": ["storage", "webNavigation"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["shared.js", "content.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_title": "Pause Before You Scroll: settings"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
+}
