@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- Settings page, opened from the toolbar icon or chrome://extensions > Details > Extension options. -->
   <meta charset="utf-8">
   <title>Pause Before You Scroll: settings</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
+    /* Dark theme matching the breathing overlay. */
     :root { color-scheme: dark; }
     body {
       margin: 0; padding: 48px 20px; background: #0c1a2b; color: #dce8f2;
@@ -47,6 +49,7 @@
   <main>
     <h1>Pause Before You Scroll</h1>
 
+    <!-- Blocked sites: the list is filled in by options.js. -->
     <h2>Blocked sites</h2>
     <p class="note">Subdomains are included: <code>youtube.com</code> also covers <code>m.youtube.com</code>.</p>
     <ul id="domains"></ul>
@@ -55,6 +58,7 @@
       <button type="submit">Add</button>
     </form>
 
+    <!-- Pass length: minutes a "Continue" pass lasts. -->
     <h2>Pass length</h2>
     <p class="note">How long "Continue" lets you use a site before the pause comes back.</p>
     <label class="inline">
@@ -62,8 +66,10 @@
       minutes
     </label>
 
+    <!-- Confirmation and error messages appear here. -->
     <div id="status" role="status"></div>
   </main>
+  <!-- shared.js provides the defaults and domain helpers; options.js runs the page. -->
   <script src="shared.js"></script>
   <script src="options.js"></script>
 </body>

@@ -1,13 +1,20 @@
-// Shared by the service worker, the content script and the options page.
+// shared.js
+// Small helpers and default settings used by every other script in the
+// extension (the background service worker, the content script and the options
+// page). Each one loads this file first, then reads what it needs from the
+// global `PBYS` object ("Pause Before You Scroll").
 globalThis.PBYS = {
-  // Settings live in chrome.storage.sync under these keys.
+  // Default settings. The background script writes these to
+  // chrome.storage.sync the first time the extension is installed.
   DEFAULTS: {
     blockedDomains: ['youtube.com', 'instagram.com', 'roblox.com'],
-    passMinutes: 10
+    passMinutes: 10 // how long "Continue" lets you stay on a site
   },
 
-  // Returns the blocked-list entry that covers `hostname` (exact match or any
-  // subdomain), or null.
+  // Checks whether the current page's hostname is on the blocked list.
+  // Returns the blocked-list entry that matches (so "m.youtube.com" gives back
+  // "youtube.com"), or null if the site is not blocked.
+  // A site matches if it is exactly the domain or any subdomain of it.
   matchDomain(hostname, blockedDomains) {
     const host = String(hostname || '').toLowerCase().replace(/\.$/, '');
     if (!Array.isArray(blockedDomains)) return null;
@@ -17,17 +24,20 @@ globalThis.PBYS = {
     return null;
   },
 
-  // Turns user input ("https://www.YouTube.com/feed") into a bare domain
-  // ("youtube.com"), or null if it isn't one.
+  // Cleans up what the user types into the options page.
+  // "https://www.YouTube.com/feed" becomes "youtube.com".
+  // Returns null if the input isn't a valid domain.
   normalizeDomain(input) {
     let s = String(input || '').trim().toLowerCase();
     if (!s) return null;
     try {
+      // Add "https://" if missing so the URL parser can extract the hostname.
       s = new URL(s.includes('://') ? s : 'https://' + s).hostname;
     } catch {
       return null;
     }
     s = s.replace(/^www\./, '').replace(/\.$/, '');
+    // Must look like "name.tld": letters, digits and hyphens, with a dot.
     return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(s) ? s : null;
   }
 };
